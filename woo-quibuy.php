@@ -3,7 +3,7 @@
  * Plugin Name: Woo QuiBuy
  * Plugin URI: https://puleeno.com/plugins/woo-quibuy
  * Description: A flexible Quick Buy dialog for WooCommerce with form builder and presets.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Puleeno Nguyen
  * Author URI: https://puleeno.com
  * Text Domain: woo-quibuy
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-define('WOO_QUIBUY_VERSION', '1.0.0');
+define('WOO_QUIBUY_VERSION', '1.0.1');
 define('WOO_QUIBUY_DIR', plugin_dir_path(__FILE__));
 define('WOO_QUIBUY_URL', plugin_dir_url(__FILE__));
 
