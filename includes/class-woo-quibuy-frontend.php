@@ -37,8 +37,10 @@ class Woo_QuiBuy_Frontend
             if ($price == 0 && !empty($pricing_data)) {
                 $tiers = $pricing_data;
                 ksort($tiers);
+                $first_qty = key($tiers);
                 $first_tier = reset($tiers);
-                $base_usd = $first_tier * 1.25;
+                $spread = $first_qty > 1 ? 1.25 : 1;
+                $base_usd = $first_tier * $spread;
                 $price = \CrawlFlow\DentalPart\Features\FlatsomeQuantityPricing::usdToVnd($base_usd);
             }
 
