@@ -20,11 +20,13 @@ class Woo_QuiBuy_Frontend
         $image_id = $product->get_image_id();
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : wc_placeholder_img_src();
         $title = $product->get_name();
+        $price = $product->get_price();
 
         echo '<button type="button" class="button woo-quibuy-btn" 
             data-product_id="' . esc_attr($product->get_id()) . '"
             data-product_image="' . esc_attr($image_url) . '"
-            data-product_title="' . esc_attr($title) . '">';
+            data-product_title="' . esc_attr($title) . '"
+            data-product_price="' . esc_attr($price) . '">';
         echo esc_html__('Mua Ngay', 'woo-quibuy');
         echo '</button>';
     }
