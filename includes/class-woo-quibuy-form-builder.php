@@ -39,9 +39,17 @@ class Woo_QuiBuy_Form_Builder
                 array(
                     'id' => 'customer_address',
                     'type' => 'textarea',
-                    'label' => 'Địa chỉ',
+                    'label' => 'Địa chỉ lắp đặt - nhận hàng',
                     'placeholder' => 'Số nhà, tên đường, phường/xã...',
                     'required' => true,
+                    'class' => 'form-row-wide'
+                ),
+                array(
+                    'id' => 'customer_note',
+                    'type' => 'textarea',
+                    'label' => 'Nội dung cần trao đổi',
+                    'placeholder' => 'Nhập nội dung cần trao đổi thêm...',
+                    'required' => false,
                     'class' => 'form-row-wide'
                 ),
             ),

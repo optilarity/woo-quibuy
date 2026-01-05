@@ -66,6 +66,11 @@ class Woo_QuiBuy_Ajax
             $order->set_address($address, 'billing');
             $order->set_address($address, 'shipping');
 
+            // Handle Note
+            if (isset($_POST['customer_note']) && !empty($_POST['customer_note'])) {
+                $order->set_customer_note(sanitize_textarea_field($_POST['customer_note']));
+            }
+
             // Calculate totals
             $order->calculate_totals();
 
