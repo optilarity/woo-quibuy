@@ -14,7 +14,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-define('WOO_QUIBUY_VERSION', '1.0.1');
+$woo_quibuy_data = get_file_data(__FILE__, array('Version' => 'Version'), 'plugin');
+define('WOO_QUIBUY_VERSION', $woo_quibuy_data['Version'] ?? '1.0.0');
 define('WOO_QUIBUY_DIR', plugin_dir_path(__FILE__));
 define('WOO_QUIBUY_URL', plugin_dir_url(__FILE__));
 
