@@ -22,11 +22,38 @@ class Woo_QuiBuy_Frontend
         $title = $product->get_name();
         $price = $product->get_price();
 
+        // Integration with DentalPart Quantity Pricing
+        $quantity_pricing_json = '';
+        if (class_exists('CrawlFlow\DentalPart\Model\QuantityPrice') && class_exists('CrawlFlow\DentalPart\Features\FlatsomeQuantityPricing')) {
+            $pricing_data = \CrawlFlow\DentalPart\Model\QuantityPrice::getPrices($product->get_id());
+
+            // Convert to VND
+            $pricing_data_vnd = [];
+            foreach ($pricing_data as $qty => $val) {
+                $pricing_data_vnd[$qty] = \CrawlFlow\DentalPart\Features\FlatsomeQuantityPricing::usdToVnd((float) $val);
+            }
+
+            // Fix 0 price issue by calculating base price
+            if ($price == 0 && !empty($pricing_data)) {
+                $tiers = $pricing_data;
+                ksort($tiers);
+                $first_tier = reset($tiers);
+                $base_usd = $first_tier * 1.25;
+                $price = \CrawlFlow\DentalPart\Features\FlatsomeQuantityPricing::usdToVnd($base_usd);
+            }
+
+            if (!empty($pricing_data_vnd)) {
+                $quantity_pricing_json = json_encode($pricing_data_vnd);
+            }
+        }
+
         echo '<button type="button" class="button woo-quibuy-btn" 
             data-product_id="' . esc_attr($product->get_id()) . '"
             data-product_image="' . esc_attr($image_url) . '"
             data-product_title="' . esc_attr($title) . '"
-            data-product_price="' . esc_attr($price) . '">';
+            data-price="' . esc_attr($price) . '"
+            data-product_price="' . esc_attr($price) . '"
+            data-quantity-pricing="' . esc_attr($quantity_pricing_json) . '">';
         echo esc_html__('Mua Ngay', 'woo-quibuy');
         echo '</button>';
     }

@@ -35,6 +35,7 @@ class WooQuiBuy {
         const productImage = btn.dataset.product_image;
         const productTitle = btn.dataset.product_title;
         const productPrice = parseFloat(btn.dataset.product_price || '0');
+        const quantityPricing = btn.dataset.quantityPricing ? JSON.parse(btn.dataset.quantityPricing) : null;
 
         // Logic to update productId in form
         const inputId = document.getElementById('woo-quibuy-product-id') as HTMLInputElement;
@@ -74,7 +75,7 @@ class WooQuiBuy {
             const priceDisplay = document.getElementById('woo-quibuy-total-price');
 
             if (qtyDisplay && priceDisplay) {
-                qtyDisplay.addEventListener('change', () => {
+                const updatePrice = () => {
                     let qty = parseInt(qtyDisplay.value) || 1;
                     if (qty < 1) qty = 1;
                     qtyDisplay.value = qty.toString();
@@ -82,18 +83,42 @@ class WooQuiBuy {
                     // Sync with hidden input
                     if (inputQty) inputQty.value = qty.toString();
 
-                    const total = qty * productPrice;
+                    // Tiered Pricing Logic
+                    let unitPrice = productPrice;
+                    if (quantityPricing) {
+                        const tiers = Object.keys(quantityPricing).map(Number).sort((a, b) => b - a); // Sort desc
+                        for (const tier of tiers) {
+                            if (qty >= tier) {
+                                unitPrice = quantityPricing[tier];
+                                break;
+                            }
+                        }
+                    }
+
+                    const total = qty * unitPrice;
                     priceDisplay.innerText = this.formatMoney(total);
 
                     // Trigger callback
-                    this.triggerCallback(qty, total, productPrice);
-                });
+                    this.triggerCallback(qty, total, unitPrice);
+                };
+
+                qtyDisplay.addEventListener('change', updatePrice);
+                qtyDisplay.addEventListener('keyup', updatePrice);
             }
         }
 
         if (this.modal) {
             this.modal.style.display = 'block';
             this.modal.setAttribute('aria-hidden', 'false');
+
+            // Dispatch event for other plugins to integrate
+            document.dispatchEvent(new CustomEvent('woo_quibuy_modal_opened', {
+                detail: {
+                    modal: this.modal,
+                    productId: productId,
+                    button: btn
+                }
+            }));
         }
     }
 
